@@ -1,7 +1,8 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-// import "firebase/database";
-const config = { //TODO: pass to environment variables
+import "firebase/database";
+const config = {
+  //TODO: pass to environment variables
   apiKey: "AIzaSyCAsXpFCFSJW3WVVCYpR16-dGkWbLOX6AA",
   authDomain: "rosbank-d6246.firebaseapp.com",
   databaseURL: "https://rosbank-d6246.firebaseio.com",
@@ -9,5 +10,7 @@ const config = { //TODO: pass to environment variables
   storageBucket: "rosbank-d6246.appspot.com",
   messagingSenderId: "354149397702"
 };
-export const app = firebase.initializeApp(config);
-//export const auth = app.auth();
+const app = firebase.initializeApp(config);
+export const auth = app.auth();
+export const db = app.database();
+export const provider = new firebase.auth.GoogleAuthProvider();

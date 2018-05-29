@@ -1,19 +1,20 @@
 <template>
-  <div>
-    <h1>My home</h1>
+  <div class="container">
+    
     <ul>
       <li v-for="(props, conta) in contas" :key="conta">
         {{props.Nome}}
       </li>
     </ul>
+    <p v-if="$store.state.user">Usuário: {{$store.state.user.displayName}}</p>
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import { app } from "../firebase";
-import "firebase/database";
-const db = app.database();
+import { db } from "../firebase";
+
 export default {
   name: "contas",
   data() {
@@ -22,9 +23,9 @@ export default {
     };
   },
   components: {},
+  methods: {},
   created() {
-    const contas = db.ref("contas");
-    contas.on("value", snapshot => {
+    db.ref("contas").on("value", snapshot => {
       this.contas = snapshot.val();
     });
   }
