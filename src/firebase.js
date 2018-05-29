@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 // import "firebase/database";
-const config = {
+const config = { //TODO: pass to environment variables
   apiKey: "AIzaSyCAsXpFCFSJW3WVVCYpR16-dGkWbLOX6AA",
   authDomain: "rosbank-d6246.firebaseapp.com",
   databaseURL: "https://rosbank-d6246.firebaseio.com",
