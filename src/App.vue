@@ -1,29 +1,24 @@
 <template>
   <div id="app">
     <app-header/>
-    <router-view v-if="user !== null" />
+    <router-view/>
+    {{error}}
   </div>
 </template>
 <script>
 import appHeader from "@/components/Header";
 import { mapState } from "vuex";
-import { auth } from "./firebase";
 export default {
   components: { appHeader },
+  data() {
+    return {
+      error: ""
+    };
+  },
   computed: {
     ...mapState(["user"])
-  },
-  beforeCreate() {
-    auth.onAuthStateChanged(user => {
-      // initially user = null, after auth it will be either <fb_user> or false
-      this.$store.commit("SET_USER", user || false);
-      if (user && this.$route.path === "/login") {
-        this.$router.replace("/");
-      } else if (!user && this.$route.path !== "/login") {
-        this.$router.replace("/login");
-      }
-    });
   }
+  //TODO: onAuthStateChanged in some hook basically to treat logOut
 };
 </script>
 

@@ -20,7 +20,6 @@ import { auth } from "@/firebase";
 export default {
   methods: {
     doLogout() {
-      this.$store.commit("SET_USER", null);
       auth.signOut();
     }
   }

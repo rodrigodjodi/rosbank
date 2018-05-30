@@ -6,7 +6,8 @@
         {{props.Nome}}
       </li>
     </ul>
-    <p v-if="$store.state.user">Usuário: {{$store.state.user.displayName}}</p>
+    <p v-if="user">Usuário: {{user.displayName}}</p>
+    <p v-if="user">Email: {{user.email}}</p>
 
   </div>
 </template>
@@ -14,13 +15,16 @@
 <script>
 // @ is an alias to /src
 import { db } from "../firebase";
-
+import { mapState } from "vuex";
 export default {
   name: "contas",
   data() {
     return {
       contas: null
     };
+  },
+  computed: {
+    ...mapState(["user"])
   },
   components: {},
   methods: {},
