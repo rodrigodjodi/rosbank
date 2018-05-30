@@ -3,14 +3,10 @@
     <div class="row">
       <button class="button-primary" @click="doLogin">ENTRAR COM O GOOGLE</button>
     </div>
-    <div class="row">
-      Erro: {{error}}
-    </div>
   </div>
 </template>
 
 <script>
-import { auth, provider } from "../firebase";
 export default {
   data() {
     return {
@@ -19,14 +15,18 @@ export default {
   },
   methods: {
     doLogin() {
-      auth.signInWithRedirect(provider);
+      this.$store.dispatch("handleSignIn");
     }
+  },
+  created() {
+    this.$store.dispatch("handleRedirect");
   }
 };
 </script>
 
 <style scoped>
-row {
+.row {
   text-align: center;
+  margin-top: 20%;
 }
 </style>

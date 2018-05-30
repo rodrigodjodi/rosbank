@@ -1,26 +1,24 @@
 <template>
 <header>
-    <div class="container">
-      <div class="row">
-        <div class="two-thirds column">
-          <h1>{{$route.meta.title}}</h1>
-        </div>
-        <div class="one-third column">
-          <button v-if="$store.state.user" @click="doLogout">SAIR</button>
-        </div>
-      </div>
-    </div>
-    
-    
+  <div class="header-menu">
+    <img v-if="user" :src="user.photoURL" alt="O botão  de menu é a foto de perfil do usuário.">
+  </div>
+  <span class="header-title">{{$route.meta.title}}</span>
+  <slot class="header-tools">
+    <button v-if="user" @click="doLogout">SAIR</button>
+  </slot>
 </header>
 </template>
 
 <script>
-import { auth } from "@/firebase";
+import { mapState } from "vuex";
 export default {
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
     doLogout() {
-      auth.signOut();
+      this.$store.dispatch("handleSignOut");
     }
   }
 };
@@ -29,8 +27,26 @@ export default {
 <style scoped>
 header {
   padding: 8px;
+  display: flex;
+  justify-content: center;
 }
-header button {
-  float: right;
+.header-menu {
+  flex-basis: 48px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+.header-menu img {
+  width: 40px;
+  border-radius: 50%;
+}
+header span.header-title {
+  font-size: 3rem;
+  line-height: 1.35;
+  letter-spacing: -0.08rem;
+  flex: 1 0;
+  text-align: center;
+}
+.header-tools {
+  flex-basis: 96px;
 }
 </style>

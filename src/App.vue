@@ -1,13 +1,16 @@
 <template>
   <div id="app">
-    <app-header/>
+    <app-header>
+      
+    </app-header>
     <router-view/>
-    {{error}}
+    <div v-if="isLoading" id="spinner"></div>
   </div>
 </template>
 <script>
 import appHeader from "@/components/Header";
 import { mapState } from "vuex";
+//import { auth } from "./firebase";
 export default {
   components: { appHeader },
   data() {
@@ -16,11 +19,37 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user", "isLoading"])
+  },
+  beforeCreate() {
+    this.$store.dispatch("observeUser");
   }
-  //TODO: onAuthStateChanged in some hook basically to treat logOut
 };
 </script>
 
 <style>
+#spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
