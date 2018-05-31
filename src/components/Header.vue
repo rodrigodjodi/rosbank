@@ -1,13 +1,15 @@
 <template>
-<header>
-  <div class="header-menu">
-    <img v-if="user" :src="user.photoURL" alt="O botão  de menu é a foto de perfil do usuário.">
-  </div>
-  <span class="header-title">{{$route.meta.title}}</span>
-  <slot class="header-tools">
-    <button v-if="user" @click="doLogout">SAIR</button>
-  </slot>
-</header>
+<div class="container">
+  <header>
+    <div class="header-menu">
+      <img v-if="user" :src="user.photoURL" alt="O botão  de menu é a foto de perfil do usuário.">
+    </div>
+    <span class="header-title">{{$route.meta.title}}</span>
+    <slot class="header-tools">
+      <button v-if="user" @click="doLogout">SAIR</button>
+    </slot>
+  </header>
+</div>
 </template>
 
 <script>

@@ -2,7 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 import store from "./store";
 // * routes
-import Contas from "./views/Contas.vue";
+import AccountList from "./views/AccountList.vue";
+import AccountForm from "./views/AccountForm.vue";
 import Login from "./views/Login.vue";
 
 Vue.use(Router);
@@ -12,10 +13,19 @@ const router = new Router({
   routes: [
     {
       path: "/",
-      name: "contas",
-      component: Contas,
+      name: "AccountList",
+      component: AccountList,
       meta: {
         title: "Contas",
+        auth: true
+      }
+    },
+    {
+      path: "/novaconta",
+      name: "AccountForm",
+      component: AccountForm,
+      meta: {
+        title: "Nova conta",
         auth: true
       }
     },

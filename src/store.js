@@ -9,7 +9,13 @@ export default new Vuex.Store({
     user: null,
     contas: null,
     tokens: null,
-    isLoading: false
+    isLoading: false,
+    accountTypes: [
+      {value:'checking', name:'Conta Corrente'},
+      {value:'savings', name:'Poupança'},
+      {value:'creditcard', name:'Cartão'},
+      {value:'cash', name:'Dinheiro'},
+    ],
   },
   mutations: {
     SET_USER(state, payload) {

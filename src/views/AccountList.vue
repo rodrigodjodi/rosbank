@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    
+    <p>Você não tem nenhuma conta.</p>
+    <router-link tag="button" to="/novaconta">CRIE SUA PRIMEIRA CONTA</router-link>
     <ul>
       <li v-for="(props, conta) in contas" :key="conta">
         {{props.Nome}}
@@ -24,14 +25,14 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user", "accountTypes"])
   },
   components: {},
-  methods: {},
+  methods: {
+    
+  },
   created() {
-    db.ref("contas").on("value", snapshot => {
-      this.contas = snapshot.val();
-    });
+    
   }
 };
 </script>
