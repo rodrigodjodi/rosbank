@@ -11,11 +11,11 @@ export default new Vuex.Store({
     tokens: null,
     isLoading: false,
     accountTypes: [
-      {value:'checking', name:'Conta Corrente'},
-      {value:'savings', name:'Poupança'},
-      {value:'creditcard', name:'Cartão'},
-      {value:'cash', name:'Dinheiro'},
-    ],
+      { value: "checking", name: "Conta Corrente" },
+      { value: "savings", name: "Poupança" },
+      { value: "creditcard", name: "Cartão" },
+      { value: "cash", name: "Dinheiro" }
+    ]
   },
   mutations: {
     SET_USER(state, payload) {

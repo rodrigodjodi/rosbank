@@ -4,7 +4,7 @@
     <router-link tag="button" to="/novaconta">CRIE SUA PRIMEIRA CONTA</router-link>
     <ul>
       <li v-for="(props, conta) in contas" :key="conta">
-        {{props.Nome}}
+        {{props.name}}
       </li>
     </ul>
     <p v-if="user">Usuário: {{user.displayName}}</p>
@@ -29,10 +29,19 @@ export default {
   },
   components: {},
   methods: {
-    
+    retrieveAccounts() {
+      db.collection("contas").where("holder", "==", this.user.uid).onSnapshot(querySnapshot => {
+        var contas = [];
+        querySnapshot.forEach(function(doc) {
+          contas.push(doc.data());
+        });
+        console.log("Numero de contas: " + contas.length );
+        this.contas = contas;
+      });
+    }
   },
   created() {
-    
+    this.retrieveAccounts();
   }
 };
 </script>
