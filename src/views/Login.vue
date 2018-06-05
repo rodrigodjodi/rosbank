@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <app-header>
+      
+    </app-header>
     <div class="row">
       <button class="button-primary" @click="doLogin">ENTRAR COM O GOOGLE</button>
     </div>
@@ -7,18 +10,28 @@
 </template>
 
 <script>
+import appHeader from "@/components/Header";
+import { mapState } from "vuex";
 export default {
+  components: { appHeader },
   data() {
     return {
       error: ""
     };
+  },
+  computed: {
+    ...mapState(["user"])
   },
   methods: {
     doLogin() {
       this.$store.dispatch("handleSignIn");
     }
   },
-  created() {}
+  mounted() {
+    if (this.user) {
+      this.$router.push("/");
+    }
+  }
 };
 </script>
 

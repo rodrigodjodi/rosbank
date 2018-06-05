@@ -1,18 +1,13 @@
 <template>
   <div id="app">
-    <app-header>
-      
-    </app-header>
     <router-view/>
     <div v-if="isLoading" id="spinner"></div>
   </div>
 </template>
 <script>
-import appHeader from "@/components/Header";
 import { mapState } from "vuex";
 //import { auth } from "./firebase";
 export default {
-  components: { appHeader },
   data() {
     return {
       error: ""

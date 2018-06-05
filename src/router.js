@@ -2,16 +2,16 @@ import Vue from "vue";
 import Router from "vue-router";
 import { auth } from "./firebase";
 // * routes
-import AccountList from "./views/AccountList.vue";
-import AccountForm from "./views/AccountForm.vue";
-import Login from "./views/Login.vue";
+import AccountList from "./views/AccountList";
+import AccountForm from "./views/AccountForm";
+import Login from "./views/Login";
+import AccountStatement from "./views/AccountStatement";
 
 Vue.use(Router);
 
 const router = new Router({
   mode: "history",
   routes: [
-    { path: "*", redirect: "/" },
     {
       path: "/",
       name: "AccountList",
@@ -23,7 +23,7 @@ const router = new Router({
     },
     {
       path: "/novaconta",
-      name: "AccountForm",
+      name: "AccountNew",
       component: AccountForm,
       meta: {
         title: "Nova conta",
@@ -38,17 +38,45 @@ const router = new Router({
         title: "Entrar",
         auth: false
       }
+    },
+    {
+      path: "/editaconta/:id",
+      name: "AccountEdit",
+      component: AccountForm,
+      meta: {
+        title: "Nova conta",
+        auth: true
+      }
+    },
+    {
+      path: "/extrato/",
+      name: "AccountStatementAll",
+      component: AccountStatement,
+      meta: {
+        title: "Extrato",
+        auth: true
+      }
+    },
+    {
+      path: "/extrato/:id",
+      name: "AccountStatement",
+      component: AccountStatement,
+      meta: {
+        title: "Extrato",
+        auth: true
+      }
     }
+    //{ path: "*", redirect: "/" }
   ]
 });
 // eslint-disable-next-line
-router.beforeEach((to, from, next) => {
+router.beforeResolve((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title;
   }
   const requiresAuth = to.matched.some(route => route.meta.auth);
   const currentUser = auth.currentUser;
-
+  console.log(requiresAuth, currentUser);
   if (requiresAuth && !currentUser) {
     next("/login");
   } else if (requiresAuth && currentUser) {

@@ -13,7 +13,8 @@
 
 <script>
 import numeral from "numeral";
-//import numeralpt from "numeral/locales/pt-br";
+// eslint-disable-next-line
+import numeralpt from "numeral/locales/pt-br";
 numeral.locale("pt-br");
 export default {
   props: {

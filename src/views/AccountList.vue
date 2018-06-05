@@ -1,49 +1,72 @@
 <template>
   <div class="container">
-    <p>Você não tem nenhuma conta.</p>
-    <router-link tag="button" to="/novaconta">CRIE SUA PRIMEIRA CONTA</router-link>
+    <app-header>
+      <router-link title="Criar nova conta" slot="actions" to="/novaconta">
+        <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
+      </router-link>
+    </app-header>
+    <h5>Suas contas</h5>
+    <template v-if="userAccounts.length == 0">
+      <p>Você não tem nenhuma conta.</p>
+      <router-link tag="button" to="/novaconta">CRIAR UMA CONTA</router-link>
+    </template>
     <ul>
-      <li v-for="(props, conta) in contas" :key="conta">
-        {{props.name}}
+      <li class="account" v-for="(props, account) in userAccounts" :key="account" :style="`border-left-color:${props.color.hex}`">
+        <router-link  class="account-body" :to="`extrato/${props.id}`">
+          <p><strong> {{props.name}}</strong></p>
+          <p>{{props.balance|currency}}</p>
+        </router-link>
       </li>
     </ul>
-    <p v-if="user">Usuário: {{user.displayName}}</p>
-    <p v-if="user">Email: {{user.email}}</p>
-
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import { db } from "../firebase";
 import { mapState } from "vuex";
+import appHeader from "@/components/Header";
+import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
+import faPlus from "@fortawesome/fontawesome-free-solid/faPlus";
+import faChevronRight from "@fortawesome/fontawesome-free-solid/faChevronRight";
 export default {
-  name: "contas",
+  components: { appHeader, FontAwesomeIcon },
+  name: "accounts",
   data() {
-    return {
-      contas: null
-    };
+    return {};
   },
   computed: {
-    ...mapState(["user", "accountTypes"])
+    icons() {
+      return {
+        plus: faPlus
+      };
+    },
+    ...mapState(["user", "userAccounts"])
   },
-  components: {},
-  methods: {
-    retrieveAccounts() {
-      db.collection("contas")
-        .where("holder", "==", this.user.uid)
-        .onSnapshot(querySnapshot => {
-          var contas = [];
-          querySnapshot.forEach(function(doc) {
-            contas.push(doc.data());
-          });
-          console.log("Numero de contas: " + contas.length);
-          this.contas = contas;
-        });
-    }
-  },
-  created() {
-    this.retrieveAccounts();
-  }
+  methods: {}
 };
 </script>
+<style>
+.account {
+  list-style: none;
+  border-left: 6px solid;
+  padding-left: 8px;
+  position: relative;
+}
+li p {
+  margin-bottom: 0.5rem;
+}
+li p:last-child {
+  font-size: 2rem;
+  color: #666;
+}
+.account-body {
+  display: inline-block;
+}
+.action {
+  float: right;
+  width: 48px;
+  height: 100%;
+}
+.action svg {
+  color: #666;
+}
+</style>

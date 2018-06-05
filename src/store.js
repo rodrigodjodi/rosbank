@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { auth, provider } from "./firebase";
+import { auth, provider, db } from "./firebase";
 import router from "./router";
 Vue.use(Vuex);
 auth.getRedirectResult().then(
@@ -20,20 +20,22 @@ auth.onAuthStateChanged(user => {
   console.log("auth state changed");
   if (user) {
     store.commit("SET_USER", user);
-    router.replace("/");
+    //router.replace("/");
+    store.dispatch("retrieveAccounts");
   } else {
     store.commit("SET_USER", null);
     store.commit("SET_TOKENS", null);
     router.replace("/login");
   }
 });
-export const store = new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     user: null,
-    contas: null,
+    userAccounts: null,
     tokens: null,
     isLoading: true,
     accountTypes: [
+      //TODO: Make this a collection in firestore
       { value: "checking", name: "Conta Corrente" },
       { value: "savings", name: "Poupança" },
       { value: "creditcard", name: "Cartão" },
@@ -41,6 +43,9 @@ export const store = new Vuex.Store({
     ]
   },
   mutations: {
+    SET_ACCOUNTS(state, payload) {
+      state.userAccounts = payload;
+    },
     SET_USER(state, payload) {
       state.user = payload;
     },
@@ -60,6 +65,21 @@ export const store = new Vuex.Store({
         commit("SET_USER", null);
         commit("SET_TOKENS", null);
       });*/
+    },
+    retrieveAccounts({ commit, state }) {
+      db.collection("contas")
+        .where("holder", "==", state.user.uid)
+        .onSnapshot(querySnapshot => {
+          let accounts = [];
+          querySnapshot.forEach(doc => {
+            let account = doc.data();
+            account.id = doc.id;
+            accounts.push(account);
+          });
+          console.log(accounts);
+          commit("SET_ACCOUNTS", accounts);
+        });
     }
   }
 });
+export default store;

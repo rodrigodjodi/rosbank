@@ -1,5 +1,10 @@
 <template>
 <div class="container">
+  <app-header>
+      <router-link slot="nav" to="/">
+        <font-awesome-icon :icon="icon" size="2x" pull="left"/>
+      </router-link>
+  </app-header>
   <label for="account_name">Nome da conta:</label>
   <input class="u-full-width" type="text" id="account_name" v-model="account.name"/>
 
@@ -36,11 +41,16 @@ import { db } from "../firebase";
 import { mapState } from "vuex";
 import { toID } from "@/assets/utils";
 //* Components
+import appHeader from "@/components/Header";
 import inputMoney from "@/components/inputMoney";
 import { Compact } from "vue-color";
+import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
+import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
 export default {
   components: {
     inputMoney,
+    appHeader,
+    FontAwesomeIcon,
     "compact-picker": Compact
   },
   name: "AccountForm",
@@ -72,15 +82,19 @@ export default {
     };
   },
   computed: {
+    icon() {
+      return faArrowLeft;
+    },
     id() {
-      return this.user.uid + "-" + toID(this.account.name);
+      return toID(this.account.name);
     },
     ...mapState(["user", "accountTypes"])
   },
   methods: {
     accountCreate() {
       this.account.holder = this.user.uid;
-      db.collection("contas")
+      db
+        .collection("contas")
         .doc(this.id)
         .set(this.account)
         .then(() => {
