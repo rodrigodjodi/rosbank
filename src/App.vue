@@ -21,9 +21,7 @@ export default {
   computed: {
     ...mapState(["user", "isLoading"])
   },
-  beforeCreate() {
-    this.$store.dispatch("observeUser");
-  }
+  beforeCreate() {}
 };
 </script>
 

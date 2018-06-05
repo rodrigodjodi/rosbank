@@ -18,9 +18,7 @@ export default {
       this.$store.dispatch("handleSignIn");
     }
   },
-  created() {
-    this.$store.dispatch("handleRedirect");
-  }
+  created() {}
 };
 </script>
 

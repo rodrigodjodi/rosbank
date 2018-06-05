@@ -13,7 +13,7 @@
 
 <script>
 import numeral from "numeral";
-import numeralpt from "numeral/locales/pt-br";
+//import numeralpt from "numeral/locales/pt-br";
 numeral.locale("pt-br");
 export default {
   props: {

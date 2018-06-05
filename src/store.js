@@ -3,13 +3,36 @@ import Vuex from "vuex";
 import { auth, provider } from "./firebase";
 import router from "./router";
 Vue.use(Vuex);
-
-export default new Vuex.Store({
+auth.getRedirectResult().then(
+  result => {
+    console.log(result);
+    store.commit("SET_LOADING", false);
+    if (result.user) {
+      console.log("ainda tem usuário");
+      store.commit("SET_TOKENS", result.credential);
+    }
+  },
+  error => {
+    console.error(error.code);
+  }
+);
+auth.onAuthStateChanged(user => {
+  console.log("auth state changed");
+  if (user) {
+    store.commit("SET_USER", user);
+    router.replace("/");
+  } else {
+    store.commit("SET_USER", null);
+    store.commit("SET_TOKENS", null);
+    router.replace("/login");
+  }
+});
+export const store = new Vuex.Store({
   state: {
     user: null,
     contas: null,
     tokens: null,
-    isLoading: false,
+    isLoading: true,
     accountTypes: [
       { value: "checking", name: "Conta Corrente" },
       { value: "savings", name: "Poupança" },
@@ -32,41 +55,11 @@ export default new Vuex.Store({
     handleSignIn() {
       auth.signInWithRedirect(provider);
     },
-    handleRedirect({ commit }) {
-      commit("SET_LOADING", true);
-      auth.getRedirectResult().then(
-        result => {
-          console.log(result);
-          commit("SET_LOADING", false);
-          if (result.user) {
-            console.log("ainda tem usuário");
-            commit("SET_TOKENS", result.credential);
-          }
-        },
-        error => {
-          console.error(error.code);
-        }
-      );
-    },
     handleSignOut() {
       auth.signOut(); /* .then(() => {
         commit("SET_USER", null);
         commit("SET_TOKENS", null);
       });*/
-    },
-    observeUser({ commit }) {
-      console.log("store observeUser action");
-      auth.onAuthStateChanged(user => {
-        console.log("auth state changed");
-        if (user) {
-          commit("SET_USER", user);
-          router.replace("/");
-        } else {
-          commit("SET_USER", null);
-          commit("SET_TOKENS", null);
-          router.push("/login");
-        }
-      });
     }
   }
 });

@@ -826,7 +826,7 @@ function toID(text) {
     ᵥ: "v",
     ₓ: "x"
   };
-  var mixed = text.replace(/[^A-Za-z0-9\[\] ]/g, function(a) {
+  var mixed = text.replace(/[^A-Za-z0-9[\] ]/g, function(a) {
     return Latinize.latin_map[a] || a;
   });
   return mixed.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();

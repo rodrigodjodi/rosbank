@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import store from "./store";
+import { auth } from "./firebase";
 // * routes
 import AccountList from "./views/AccountList.vue";
 import AccountForm from "./views/AccountForm.vue";
@@ -11,6 +11,7 @@ Vue.use(Router);
 const router = new Router({
   mode: "history",
   routes: [
+    { path: "*", redirect: "/" },
     {
       path: "/",
       name: "AccountList",
@@ -41,15 +42,20 @@ const router = new Router({
   ]
 });
 // eslint-disable-next-line
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title;
   }
-  if (to.meta.auth) {
-    //?Do we have a user in the store?
-    store.state.user ? next() : next("/login");
+  const requiresAuth = to.matched.some(route => route.meta.auth);
+  const currentUser = auth.currentUser;
+
+  if (requiresAuth && !currentUser) {
+    next("/login");
+  } else if (requiresAuth && currentUser) {
+    next();
   } else {
     next();
   }
 });
+
 export default router;

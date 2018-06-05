@@ -30,14 +30,16 @@ export default {
   components: {},
   methods: {
     retrieveAccounts() {
-      db.collection("contas").where("holder", "==", this.user.uid).onSnapshot(querySnapshot => {
-        var contas = [];
-        querySnapshot.forEach(function(doc) {
-          contas.push(doc.data());
+      db.collection("contas")
+        .where("holder", "==", this.user.uid)
+        .onSnapshot(querySnapshot => {
+          var contas = [];
+          querySnapshot.forEach(function(doc) {
+            contas.push(doc.data());
+          });
+          console.log("Numero de contas: " + contas.length);
+          this.contas = contas;
         });
-        console.log("Numero de contas: " + contas.length );
-        this.contas = contas;
-      });
     }
   },
   created() {
