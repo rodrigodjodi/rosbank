@@ -8,10 +8,10 @@
   <label for="account_name">Nome da conta:</label>
   <input class="u-full-width" type="text" id="account_name" v-model="account.name"/>
 
-  <input-money label="Saldo:" v-model="account.balance"/>
+  <input-money input-class="u-full-width" label="Saldo:" v-model="account.balance"/>
 
-  <label for="accountid">Tipo de conta:</label>
-  <select v-model="account.type" name="accounttype" id="accountid">
+  <label for="accounttype">Tipo de conta:</label>
+  <select v-model="account.type" name="accounttype" id="accounttype">
     
     <option
       v-for="accountType in accountTypes"
@@ -75,9 +75,12 @@ export default {
         "#4D4D4D",
         "#999999",
         "#FFFFFF",
-        "#F44E3B",
+        "#ec0000",
         "#FE9200",
-        "#FCDC00"
+        "#ffed00",
+        "#84139e",
+        "#3E8C3B",
+        "#0e56bd"
       ]
     };
   },

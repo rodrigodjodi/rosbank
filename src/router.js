@@ -6,30 +6,13 @@ import AccountList from "./views/AccountList";
 import AccountForm from "./views/AccountForm";
 import Login from "./views/Login";
 import AccountStatement from "./views/AccountStatement";
+import TransactionForm from "./views/TransactionForm";
 
 Vue.use(Router);
 
 const router = new Router({
   mode: "history",
   routes: [
-    {
-      path: "/",
-      name: "AccountList",
-      component: AccountList,
-      meta: {
-        title: "Contas",
-        auth: true
-      }
-    },
-    {
-      path: "/novaconta",
-      name: "AccountNew",
-      component: AccountForm,
-      meta: {
-        title: "Nova conta",
-        auth: true
-      }
-    },
     {
       path: "/login",
       name: "login",
@@ -40,8 +23,17 @@ const router = new Router({
       }
     },
     {
-      path: "/editaconta/:id",
-      name: "AccountEdit",
+      path: "/",
+      name: "AccountList",
+      component: AccountList,
+      meta: {
+        title: "Contas",
+        auth: true
+      }
+    },
+    {
+      path: "/account",
+      name: "AccountNew",
       component: AccountForm,
       meta: {
         title: "Nova conta",
@@ -49,8 +41,18 @@ const router = new Router({
       }
     },
     {
-      path: "/extrato/",
-      name: "AccountStatementAll",
+      path: "/account/:id",
+      name: "AccountEdit",
+      component: AccountForm,
+      meta: {
+        title: "Dados conta",
+        auth: true
+      }
+    },
+    {
+      path: "/statement",
+      name: "AccountStatement",
+      props: true,
       component: AccountStatement,
       meta: {
         title: "Extrato",
@@ -58,11 +60,20 @@ const router = new Router({
       }
     },
     {
-      path: "/extrato/:id",
-      name: "AccountStatement",
-      component: AccountStatement,
+      path: "/transaction",
+      name: "TransactionNew",
+      component: TransactionForm,
       meta: {
-        title: "Extrato",
+        title: "Nova transação",
+        auth: true
+      }
+    },
+    {
+      path: "/transaction/:id",
+      name: "TransactionEdit",
+      component: TransactionForm,
+      meta: {
+        title: "Dados transação",
         auth: true
       }
     }

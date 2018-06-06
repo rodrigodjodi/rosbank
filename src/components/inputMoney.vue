@@ -1,8 +1,8 @@
 <template>
   <div class="field">
-    <label>{{label}}</label>  
+    <label v-if="label">{{label}}</label>  
     <input
-      class="u-full-width"
+      :class="inputClass"
       type="text"
       :value="valuetxt"
       inputmode="numeric"
@@ -23,8 +23,10 @@ export default {
       default: 0
     },
     label: {
-      type: String,
-      default: "Valor"
+      type: String
+    },
+    inputClass: {
+      type: String
     }
   },
   computed: {

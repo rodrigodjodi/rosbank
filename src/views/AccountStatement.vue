@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <app-header>
+    <app-header :title="accountName">
     <router-link slot="nav" to="/">
         <font-awesome-icon :icon="icons.back" size="2x" pull="left"/>
       </router-link>
@@ -29,6 +29,11 @@ import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
 export default {
   components: { appHeader, FontAwesomeIcon },
   name: "AccountStatement",
+  props: {
+    account: {
+      type: Object
+    }
+  },
   data() {
     return {};
   },
@@ -38,6 +43,11 @@ export default {
         plus: faPlus,
         back: faArrowLeft
       };
+    },
+    accountName() {
+      if (this.account) {
+        return this.account.name;
+      }
     },
     ...mapState(["user", "userAccounts"])
   },

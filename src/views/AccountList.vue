@@ -1,32 +1,41 @@
 <template>
   <div class="container">
     <app-header>
-      <router-link title="Criar nova conta" slot="actions" to="/novaconta">
+      <router-link title="Criar nova conta" slot="actions" to="/account">
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>
     <h5>Suas contas</h5>
     <template v-if="userAccounts.length == 0">
       <p>Você não tem nenhuma conta.</p>
-      <router-link tag="button" to="/novaconta">CRIAR UMA CONTA</router-link>
+      <router-link tag="button" to="/account">CRIAR UMA CONTA</router-link>
     </template>
-    <ul>
-      <li class="account" v-for="(props, account) in userAccounts" :key="account" :style="`border-left-color:${props.color.hex}`">
-        <router-link  class="account-body" :to="`extrato/${props.id}`">
-          <p><strong> {{props.name}}</strong></p>
-          <p>{{props.balance|currency}}</p>
+    <ul v-if="userAccounts">
+      <li tabindex="0" class="account" v-for="account in userAccounts" :key="account.id" :style="`border-left-color:${account.color.hex}`">
+        <router-link tag="div" class="account-body" :to="{name: 'AccountStatement', params:{account: account} }">
+          <p><strong> {{account.name}}</strong></p>
+          <p>{{account.balance|currency}}</p>
+        </router-link>
+        <router-link tag="div" class="action" to="/transaction" :style="`color:${account.color.hex}`">
+          <font-awesome-icon :icon="icons.list" size="2x" pull="right" />
         </router-link>
       </li>
     </ul>
+     <router-link title="Criar nova conta" slot="actions" to="/account">
+      Nova conta
+     </router-link>
   </div>
 </template>
 
 <script>
+//libs
 import { mapState } from "vuex";
+//components
 import appHeader from "@/components/Header";
+// icons
 import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
 import faPlus from "@fortawesome/fontawesome-free-solid/faPlus";
-import faChevronRight from "@fortawesome/fontawesome-free-solid/faChevronRight";
+import faListAlt from "@fortawesome/fontawesome-free-solid/faListAlt";
 export default {
   components: { appHeader, FontAwesomeIcon },
   name: "accounts",
@@ -36,7 +45,8 @@ export default {
   computed: {
     icons() {
       return {
-        plus: faPlus
+        plus: faPlus,
+        list: faListAlt
       };
     },
     ...mapState(["user", "userAccounts"])
@@ -51,22 +61,28 @@ export default {
   padding-left: 8px;
   position: relative;
 }
+.account:hover,
+.account:focus {
+  border-left: 10px solid;
+  padding-left: 4px;
+}
 li p {
   margin-bottom: 0.5rem;
 }
 li p:last-child {
   font-size: 2rem;
-  color: #666;
+  color: #aaa;
 }
 .account-body {
+  width: 80%;
   display: inline-block;
+  user-select: none;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 .action {
   float: right;
   width: 48px;
   height: 100%;
-}
-.action svg {
-  color: #666;
 }
 </style>

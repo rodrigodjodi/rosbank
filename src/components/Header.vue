@@ -6,7 +6,7 @@
       <img @click="doLogout" v-if="user" :src="user.photoURL" alt="O botão  de menu é a foto de perfil do usuário.">
     </slot>
   </div>
-  <span class="header-title">{{$route.meta.title}}</span>
+  <span class="header-title">{{computedTitle}}</span>
   <div  class="header-tools">
     <slot name="actions">
       
@@ -20,8 +20,16 @@
 import { mapState } from "vuex";
 export default {
   name: "appHeader",
+  props: {
+    title: {
+      type: String
+    }
+  },
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user"]),
+    computedTitle() {
+      return this.title ? this.title : this.$route.meta.title;
+    }
   },
   methods: {
     doLogout() {
