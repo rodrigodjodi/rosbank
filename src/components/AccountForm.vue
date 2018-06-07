@@ -1,17 +1,12 @@
 <template>
-<div class="container">
-  <app-header>
-      <router-link slot="nav" to="/">
-        <font-awesome-icon :icon="icon" size="2x" pull="left"/>
-      </router-link>
-  </app-header>
+<div>
   <label for="account_name">Nome da conta:</label>
-  <input class="u-full-width" type="text" id="account_name" v-model="account.name"/>
+  <input class="u-full-width" type="text" id="account_name" v-model="accountEditing.name"/>
 
-  <input-money input-class="u-full-width" label="Saldo:" v-model="account.balance"/>
+  <input-money input-class="u-full-width" label="Saldo:" v-model="accountEditing.balance"/>
 
   <label for="accounttype">Tipo de conta:</label>
-  <select v-model="account.type" name="accounttype" id="accounttype">
+  <select v-model="accountEditing.type" name="accounttype" id="accounttype">
     
     <option
       v-for="accountType in accountTypes"
@@ -22,18 +17,25 @@
     </option>
   </select>
   <label>Cor:</label>
-  <compact-picker :palette="defaultColors" v-model="account.color" />
+  <compact-picker :palette="defaultColors" v-model="accountEditing.color" />
   <br/>
-  <div class="row">
+  <div v-if="!accountEditing.id" class="row">
     <div class="six columns">
-      <button class="u-full-width">LIMPAR</button>
+      <button @click="clearFields" class="u-full-width">LIMPAR</button>
     </div>
     <div class="six columns">
       <button @click="accountCreate" class="button-primary u-full-width">ENVIAR</button>
     </div>
   </div>
-</div>
-  
+  <div v-else class="row">
+    <div class="one-third column">
+      <button @click="accountDelete" class="button-danger u-full-width">EXCLUIR</button>
+    </div>
+    <div class="two-thirds column">
+      <button @click="accountUpdate" class="button-primary u-full-width">ATUALIZAR</button>
+    </div>
+  </div>  
+</div>  
 </template>
 
 <script>
@@ -41,21 +43,16 @@ import { db } from "../firebase";
 import { mapState } from "vuex";
 import { toID } from "@/assets/utils";
 //* Components
-import appHeader from "@/components/Header";
 import inputMoney from "@/components/inputMoney";
 import { Compact } from "vue-color";
-import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
-import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
 export default {
+  name: "AccountForm",
   components: {
     inputMoney,
-    appHeader,
-    FontAwesomeIcon,
     "compact-picker": Compact
   },
-  name: "AccountForm",
   props: {
-    accountEditing: {
+    account: {
       type: Object,
       default: function() {
         return {
@@ -63,14 +60,15 @@ export default {
           type: "",
           balance: 0,
           color: "#4D4D4D",
-          holder: ""
+          holder: "",
+          id: null
         };
       }
     }
   },
   data() {
     return {
-      account: this.accountEditing,
+      accountEditing: this.account,
       defaultColors: [
         "#4D4D4D",
         "#999999",
@@ -85,9 +83,6 @@ export default {
     };
   },
   computed: {
-    icon() {
-      return faArrowLeft;
-    },
     id() {
       return toID(this.account.name);
     },
@@ -101,11 +96,43 @@ export default {
         .doc(this.id)
         .set(this.account)
         .then(() => {
+          this.clearFields();
           this.$router.push("/");
         })
         .catch(error => {
           console.error("Error writing document: ", error);
         });
+    },
+    accountUpdate() {
+      console.log(this.accountEditing);
+      //TODO: deve atualizar a conta e todos seus lançamentos
+    },
+    accountDelete() {
+      let sure = window.confirm(
+        "ATENÇÃO: Essa ação apagará a conta. As transações continuarão existindo"
+      );
+      if (sure) {
+        db
+          .collection("contas")
+          .doc(this.accountEditing.id)
+          .delete()
+          .then(() => {
+            console.log("conta apagada");
+            this.$router.push("/");
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    },
+    clearFields() {
+      this.account = {
+        name: "",
+        type: "",
+        balance: 0,
+        color: "#4D4D4D",
+        holder: ""
+      };
     }
   }
 };

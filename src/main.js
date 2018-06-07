@@ -4,7 +4,9 @@ import router from "./router";
 import store from "./store";
 import { auth } from "./firebase";
 //import "./registerServiceWorker";
-
+//*css
+import "@/assets/normalize.css";
+import "@/assets/skeleton.css";
 Vue.config.productionTip = false;
 Vue.filter("currency", function(value) {
   return (value / 100).toLocaleString("pt-BR", {

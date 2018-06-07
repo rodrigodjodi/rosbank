@@ -21,6 +21,26 @@ export default {
 </script>
 
 <style>
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.tab {
+  font-size: 2rem;
+  line-height: 1.5;
+  letter-spacing: -0.05rem;
+  font-weight: 300;
+  flex: 1;
+  text-decoration: none;
+  color: #ccc;
+  text-align: center;
+}
+.tab.router-link-active {
+  font-weight: 500;
+  border-bottom: 4px solid #1eaedb;
+  color: white;
+}
 #spinner {
   position: absolute;
   left: 50%;

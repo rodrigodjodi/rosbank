@@ -1,12 +1,17 @@
 import Vue from "vue";
 import Router from "vue-router";
 import { auth } from "./firebase";
-// * routes
-import AccountList from "./views/AccountList";
-import AccountForm from "./views/AccountForm";
+// * View components
 import Login from "./views/Login";
-import AccountStatement from "./views/AccountStatement";
-import TransactionForm from "./views/TransactionForm";
+import Home from "./views/Home";
+import Account from "./views/Account";
+import Forms from "./views/Forms";
+//* components
+import TransactionForm from "./components/TransactionForm";
+import AccountList from "./components/AccountList";
+import AccountForm from "./components/AccountForm";
+import Statement from "./components/Statement";
+import Forecast from "./components/Forecast";
 
 Vue.use(Router);
 
@@ -24,58 +29,60 @@ const router = new Router({
     },
     {
       path: "/",
-      name: "AccountList",
-      component: AccountList,
-      meta: {
-        title: "Contas",
-        auth: true
-      }
-    },
-    {
-      path: "/account",
-      name: "AccountNew",
-      component: AccountForm,
-      meta: {
-        title: "Nova conta",
-        auth: true
-      }
+      component: Home,
+
+      children: [
+        {
+          path: "",
+          component: AccountList,
+          name: "Home",
+          meta: { title: "Contas", auth: true }
+        },
+        {
+          path: "statement",
+          component: Statement,
+          name: "StatementsAll",
+          meta: {
+            title: "Contas",
+            auth: true
+          }
+        },
+        {
+          path: "forecast",
+          component: Forecast,
+          name: "Forecast",
+          meta: {
+            title: "Contas",
+            auth: true
+          }
+        }
+      ]
     },
     {
       path: "/account/:id",
-      name: "AccountEdit",
-      component: AccountForm,
+      component: Account,
       meta: {
         title: "Dados conta",
         auth: true
       }
     },
     {
-      path: "/statement",
-      name: "AccountStatement",
-      props: true,
-      component: AccountStatement,
-      meta: {
-        title: "Extrato",
-        auth: true
-      }
-    },
-    {
-      path: "/transaction",
-      name: "TransactionNew",
-      component: TransactionForm,
-      meta: {
-        title: "Nova transação",
-        auth: true
-      }
-    },
-    {
-      path: "/transaction/:id",
-      name: "TransactionEdit",
-      component: TransactionForm,
-      meta: {
-        title: "Dados transação",
-        auth: true
-      }
+      path: "/new",
+      component: Forms,
+      children: [
+        {
+          path: "transaction",
+          component: TransactionForm,
+          name: "NewTransaction",
+          meta: { title: "Novo lançamento" }
+        },
+        {
+          path: "account",
+          component: AccountForm,
+          name: "NewAccount",
+          meta: { title: "Nova conta" }
+        }
+      ]
     }
     //{ path: "*", redirect: "/" }
   ]

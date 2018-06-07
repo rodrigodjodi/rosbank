@@ -1,11 +1,10 @@
 <template>
-<div class="container">
-  <app-header>
-      <router-link slot="nav" to="/">
-        <font-awesome-icon :icon="icon" size="2x" pull="left"/>
-      </router-link>
-  </app-header>
-  <h1>form here</h1>
+<div>
+  <div class="tabs">
+    <a class="tab">Débito</a>
+    <a class="tab ">Crédito</a>
+    <a class="tab ">Transferência</a>
+  </div>
 </div>
 </template>
 
@@ -25,9 +24,6 @@ export default {
   computed: {
     icon() {
       return faArrowLeft;
-    },
-    id() {
-      return toID(this.account.name);
     },
     ...mapState(["user", "accountTypes"])
   }
