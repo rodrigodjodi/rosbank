@@ -21,8 +21,8 @@
 <script>
 import { mapState } from "vuex";
 import appHeader from "@/components/Header";
-import AccountForm from "@/components/AccountForm";
 import Statement from "@/components/Statement";
+const AccountForm = () => import("@/components/AccountForm");
 import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
 import faPlus from "@fortawesome/fontawesome-free-solid/faPlus";
 import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
