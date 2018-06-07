@@ -5,7 +5,11 @@
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>
-    <h5>Suas contas</h5>
+    <div class="tabs">
+      <span class="tab active">Resumo</span>
+      <span class="tab">Lançamentos</span>
+      <span class="tab">Lançamentos</span>
+    </div>
     <template v-if="userAccounts.length == 0">
       <p>Você não tem nenhuma conta.</p>
       <router-link tag="button" to="/account">CRIAR UMA CONTA</router-link>
@@ -60,6 +64,23 @@ export default {
   border-left: 6px solid;
   padding-left: 8px;
   position: relative;
+}
+.tabs{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.tab {
+  font-size: 2.4rem;
+  line-height: 1.5;
+    letter-spacing: -0.05rem;
+    font-weight: 300;
+    flex: 1;
+}
+.tab.active{
+    font-weight: 500;
+    border-bottom: 4px solid #1eaedb;
+    color:white;
 }
 .account:hover,
 .account:focus {
