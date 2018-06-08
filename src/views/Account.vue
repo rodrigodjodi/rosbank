@@ -10,10 +10,9 @@
     </app-header>
     <div class="tabs">
       <a @click="view = 'Statement'" :class="['tab', view === 'Statement'?'router-link-active':'']">Extrato</a>
-      <a @click="view = 'Details'" :class="['tab', view === 'Details'?'router-link-active':'']">Detalhes</a>
+      <a @click="view = 'AccountForm'" :class="['tab', view === 'AccountForm'?'router-link-active':'']">Detalhes</a>
     </div>
-    <statement v-if="view === 'Statement'"/>
-    <account-form v-if="view === 'Details'" :account="account"/>
+    <component :is="view" :account="account"></component>  
 
   </div>
 </template>
