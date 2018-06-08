@@ -35,6 +35,7 @@ export default {
   text-decoration: none;
   color: #ccc;
   text-align: center;
+  cursor: pointer;
 }
 .tab.router-link-active {
   font-weight: 500;

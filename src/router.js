@@ -30,50 +30,23 @@ const router = new Router({
     {
       path: "/",
       component: Home,
-
-      children: [
-        {
-          path: "",
-          component: AccountList,
-          name: "Home",
-          meta: { title: "Contas", auth: true }
-        },
-        {
-          path: "statement",
-          component: Statement,
-          name: "StatementsAll",
-          meta: {
-            title: "Contas",
-            auth: true
-          }
-        },
-        {
-          path: "forecast",
-          component: Forecast,
-          name: "Forecast",
-          meta: {
-            title: "Contas",
-            auth: true
-          }
-        }
-      ]
+      meta: { title: "Contas", auth: true }
     },
     {
       path: "/account/:id",
       component: Account,
-      meta: {
-        title: "Dados conta",
-        auth: true
-      }
+      meta: { title: "Dados conta", auth: true }
     },
     {
       path: "/new",
       component: Forms,
+      props: true,
       children: [
         {
           path: "transaction",
           component: TransactionForm,
           name: "NewTransaction",
+          props: true,
           meta: { title: "Novo lançamento" }
         },
         {

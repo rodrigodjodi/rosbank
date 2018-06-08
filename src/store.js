@@ -44,6 +44,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     SET_ACCOUNTS(state, payload) {
+      console.log("accounts set");
       state.userAccounts = payload;
     },
     SET_USER(state, payload) {
@@ -61,13 +62,10 @@ const store = new Vuex.Store({
       auth.signInWithRedirect(provider);
     },
     handleSignOut() {
-      auth.signOut(); /* .then(() => {
-        commit("SET_USER", null);
-        commit("SET_TOKENS", null);
-      });*/
+      auth.signOut();
     },
     retrieveAccounts({ commit, state }) {
-      db.collection("contas")
+      db.collection("accounts")
         .where("holder", "==", state.user.uid)
         .onSnapshot(querySnapshot => {
           let accounts = [];

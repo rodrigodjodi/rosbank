@@ -1,10 +1,10 @@
 <template>
-  <div class="container">
+  <div v-if="userAccounts" class="container">
     <app-header :title="account.name">
     <router-link slot="nav" to="/">
         <font-awesome-icon :icon="icons.back" size="2x" pull="left"/>
       </router-link>
-      <router-link title="Criar nova transação" slot="actions" to="/transaction">
+      <router-link title="Criar nova transação" slot="actions" :to="{name:'NewTransaction', params:{accountProp:account}}">
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>
@@ -31,24 +31,21 @@ export default {
   props: {},
   data() {
     return {
-      account: {},
       view: "Statement"
     };
   },
   computed: {
     ...mapState(["userAccounts"]),
+    account() {
+      return this.userAccounts.find(element => {
+        return element.id === this.$route.params.id;
+      });
+    },
     icons() {
       return {
         plus: faPlus,
         back: faArrowLeft
       };
-    }
-  },
-  watch: {
-    userAccounts(val) {
-      this.account = val.find(element => {
-        return element.id === this.$route.params.id;
-      });
     }
   }
 };

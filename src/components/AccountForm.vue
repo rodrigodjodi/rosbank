@@ -92,7 +92,7 @@ export default {
     accountCreate() {
       this.account.holder = this.user.uid;
       db
-        .collection("contas")
+        .collection("accounts")
         .doc(this.id)
         .set(this.account)
         .then(() => {
@@ -113,7 +113,7 @@ export default {
       );
       if (sure) {
         db
-          .collection("contas")
+          .collection("accounts")
           .doc(this.accountEditing.id)
           .delete()
           .then(() => {
@@ -126,7 +126,7 @@ export default {
       }
     },
     clearFields() {
-      this.account = {
+      this.accountEditing = {
         name: "",
         type: "",
         balance: 0,

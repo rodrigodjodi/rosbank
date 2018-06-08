@@ -7,7 +7,7 @@
           <p><strong> {{account.name}}</strong></p>
           <p>{{account.balance|currency}}</p>
       </router-link>
-      <router-link tag="div" class="action" to="/new/transaction" :style="`color:${account.color.hex}`">
+      <router-link tag="div" class="action" :to="{name:'NewTransaction', params:{accountProp:account}}" :style="`color:${account.color.hex}`">
           <font-awesome-icon :icon="icons.transaction" size="2x" pull="right" :rotation="90" />
       </router-link>
       </li>

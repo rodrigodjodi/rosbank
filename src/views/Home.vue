@@ -1,33 +1,38 @@
 <template>
   <div class="container">
     <app-header>
-      <router-link title="Criar nova conta" slot="actions" to="/account">
+      <router-link title="Criar nova conta" slot="actions" to="new/account">
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>
     <div class="tabs">
-      <router-link to="/" exact class="tab">Resumo</router-link>
-      <router-link to="/statement" exact class="tab ">Lançamentos</router-link>
-      <router-link to="/forecast" class="tab ">30 dias</router-link>
+      <a @click="view = 'AccountList'" :class="['tab', view === 'AccountList'?'router-link-active':'']">Resumo</a>
+      <a @click="view = 'Statement'" :class="['tab', view === 'Statement'?'router-link-active':'']">Lançamentos</a>
+      <a @click="view = 'Forecast'" :class="['tab', view === 'Forecast'?'router-link-active':'']">30 dias</a>
     </div>
-    <router-view></router-view>
+    <component :is="view"></component>
   </div>
 </template>
 
 <script>
 //libs
 import { mapState } from "vuex";
-//components
+//*components
 import appHeader from "@/components/Header";
+import AccountList from "@/components/AccountList";
+const Statement = () => import("@/components/Statement");
+const Forecast = () => import("@/components/Forecast");
 // icons
 import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
 import faPlus from "@fortawesome/fontawesome-free-solid/faPlus";
 
 export default {
-  components: { appHeader, FontAwesomeIcon },
+  components: { appHeader, FontAwesomeIcon, AccountList, Statement, Forecast },
   name: "accounts",
   data() {
-    return {};
+    return {
+      view: "AccountList"
+    };
   },
   computed: {
     icons() {
