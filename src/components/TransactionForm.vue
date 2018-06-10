@@ -74,7 +74,7 @@ export default {
           what: "",
           when: new Date().toDateInputValue(),
           due: new Date().toDateInputValue(),
-          geo: {}
+          geo: null
         };
       }
     },
@@ -115,10 +115,10 @@ export default {
       console.log("this is a transfer");
     },
     updateLocation(payload) {
-      this.transactionEditing.geo = {
-        lat: payload.latitude,
-        lng: payload.longitude
-      };
+      this.transactionEditing.geo = new db.GeoPoint(
+        payload.latitude,
+        payload.longitude
+      )
     },
     clearFields() {
       this.transactionEditing = {
@@ -128,7 +128,7 @@ export default {
         what: "",
         when: new Date().toDateInputValue(),
         due: new Date().toDateInputValue(),
-        geo: {}
+        geo: null
       };
       this.fromAccount = "";
       this.toAccount = "";
