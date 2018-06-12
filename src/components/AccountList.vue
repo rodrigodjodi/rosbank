@@ -2,12 +2,12 @@
 <template>
 <div>
   <ul v-if="userAccounts">
-      <li tabindex="0" class="account" v-for="account in userAccounts" :key="account.id" :style="`border-left-color:${account.color.hex}`">
-      <router-link tag="div" class="account-body" :to="`/account/${account.id}`">
+      <li tabindex="0" class="account" v-for="(account, id) in userAccounts" :key="id" :style="`border-left-color:${account.color.hex}`">
+      <router-link tag="div" class="account-body" :to="`/account/${id}`">
           <p><strong> {{account.name}}</strong></p>
           <p>{{account.balance|currency}}</p>
       </router-link>
-      <router-link tag="div" class="action" :to="{name:'NewTransaction', params:{accountProp:account}}" :style="`color:${account.color.hex}`">
+      <router-link tag="div" class="action" :to="{name:'NewTransaction', params:{accountId:id}}" :style="`color:${account.color.hex}`">
           <font-awesome-icon :icon="icons.transaction" size="2x" pull="right" :rotation="90" />
       </router-link>
       </li>
@@ -15,7 +15,7 @@
   <router-link 
     title="Criar nova conta"
     slot="actions"
-    to="/new/account"
+    to="/account"
   >Nova conta
   </router-link>
 </div>
@@ -39,4 +39,36 @@ export default {
 </script>
 
 <style>
+.account {
+  list-style: none;
+  border-left: 6px solid;
+  padding-left: 8px;
+  position: relative;
+}
+
+.account:hover,
+.account:focus {
+  border-left: 10px solid;
+  padding-left: 4px;
+}
+li p {
+  margin-bottom: 0.5rem;
+}
+li p:last-child {
+  font-size: 2rem;
+  color: #aaa;
+}
+.account-body {
+  width: 80%;
+  display: inline-block;
+  user-select: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.action {
+  float: right;
+  width: 48px;
+  height: 100%;
+  cursor: pointer;
+}
 </style>

@@ -33,29 +33,32 @@ const router = new Router({
       meta: { title: "Contas", auth: true }
     },
     {
-      path: "/account/:id",
-      component: Account,
+      path: "/account",
+      name: "NewAccount",
+      component: Forms,
+      props: { comp: "AccountForm" },
       meta: { title: "Dados conta", auth: true }
     },
     {
-      path: "/new",
-      component: Forms,
+      path: "/account/:accountId",
+      name: "AccountProperties",
+      component: Account,
       props: true,
-      children: [
-        {
-          path: "transaction",
-          component: TransactionForm,
-          name: "NewTransaction",
-          props: true,
-          meta: { title: "Novo lançamento" }
-        },
-        {
-          path: "account",
-          component: AccountForm,
-          name: "NewAccount",
-          meta: { title: "Nova conta" }
-        }
-      ]
+      meta: { title: "Dados conta", auth: true }
+    },
+    {
+      path: "/account/:accountId/transaction",
+      name: "NewTransaction",
+      component: Forms,
+      props: { comp: "TransactionForm" },
+      meta: { title: "Novo lançamento", auth: true }
+    },
+    {
+      path: "/account/:accountId/transaction/:transactionId",
+      name: "TransactionProperties",
+      component: Forms,
+      props: { comp: "TransactionForm" },
+      meta: { title: "Transação", auth: true }
     }
     //{ path: "*", redirect: "/" }
   ]

@@ -1,12 +1,12 @@
 <template>
 <div>
   <label for="account_name">Nome da conta:</label>
-  <input class="u-full-width" type="text" id="account_name" v-model="accountEditing.name"/>
+  <input class="u-full-width" type="text" id="account_name" v-model="account.name" :disabled="readOnly"/>
 
-  <input-money input-class="u-full-width" label="Saldo:" v-model="accountEditing.balance"/>
+  <input-money input-class="u-full-width" label="Saldo:" v-model="account.balance" :disabled="readOnly"/>
 
   <label for="accounttype">Tipo de conta:</label>
-  <select v-model="accountEditing.type" name="accounttype" id="accounttype">
+  <select v-model="account.type" name="accounttype" id="accounttype" :disabled="readOnly">
     
     <option
       v-for="accountType in accountTypes"
@@ -17,9 +17,9 @@
     </option>
   </select>
   <label>Cor:</label>
-  <compact-picker :palette="defaultColors" v-model="accountEditing.color" />
+  <compact-picker :palette="defaultColors" v-model="account.color" :disabled="readOnly"/>
   <br/>
-  <div v-if="!accountEditing.id" class="row">
+  <div v-if="!accountId" class="row">
     <div class="six columns">
       <button @click="clearFields" class="u-full-width">LIMPAR</button>
     </div>
@@ -29,10 +29,10 @@
   </div>
   <div v-else class="row">
     <div class="one-third column">
-      <button @click="accountDelete" class="button-danger u-full-width">EXCLUIR</button>
+      <button @click="accountDelete" class="button-danger u-full-width" :disabled="readOnly">EXCLUIR</button>
     </div>
     <div class="two-thirds column">
-      <button @click="accountUpdate" class="button-primary u-full-width">ATUALIZAR</button>
+      <button @click="accountUpdate" class="button-primary u-full-width" :disabled="readOnly">ATUALIZAR</button>
     </div>
   </div>  
 </div>  
@@ -52,49 +52,49 @@ export default {
     "compact-picker": Compact
   },
   props: {
-    account: {
-      type: Object,
-      default: function() {
-        return {
-          name: "",
-          type: "",
-          balance: 0,
-          color: "#4D4D4D",
-          holder: "",
-          id: null
-        };
-      }
+    accountId: {
+      type: String
     }
   },
   data() {
     return {
-      accountEditing: this.account,
+      account: {
+        name: "",
+        type: "",
+        balance: 0,
+        color: "#4D4D4D",
+        holder: ""
+      },
       defaultColors: [
         "#4D4D4D",
         "#999999",
         "#FFFFFF",
-        "#ec0000",
+        "#EC0000",
         "#FE9200",
-        "#ffed00",
-        "#84139e",
+        "#FFED00",
+        "#84139E",
         "#3E8C3B",
-        "#0e56bd"
+        "#0E56BD"
       ]
     };
   },
   computed: {
-    id() {
-      return toID(this.account.name);
+    ...mapState(["user", "accountTypes", "userAccounts"]),
+    idFromName() {
+      return this.accountId ? this.accountId : toID(this.account.name);
     },
-    ...mapState(["user", "accountTypes"])
+    readOnly() {
+      if (!this.accountId) return false;
+      return this.account.holder !== this.user.uid;
+    }
   },
   methods: {
     accountCreate() {
       this.account.holder = this.user.uid;
+      this.account.createdOn = new Date();
       db
         .collection("accounts")
-        .doc(this.id)
-        .set(this.account)
+        .add(this.account)
         .then(() => {
           this.clearFields();
           this.$router.push("/");
@@ -104,7 +104,7 @@ export default {
         });
     },
     accountUpdate() {
-      console.log(this.accountEditing);
+      console.log(this.account);
       //TODO: deve atualizar a conta e todos seus lançamentos
     },
     accountDelete() {
@@ -114,7 +114,7 @@ export default {
       if (sure) {
         db
           .collection("accounts")
-          .doc(this.accountEditing.id)
+          .doc(this.accountId)
           .delete()
           .then(() => {
             console.log("conta apagada");
@@ -126,13 +126,19 @@ export default {
       }
     },
     clearFields() {
-      this.accountEditing = {
+      this.account = {
         name: "",
         type: "",
         balance: 0,
         color: "#4D4D4D",
         holder: ""
       };
+    }
+  },
+  created() {
+    if (this.accountId) {
+      this.account = {};
+      this.account = { ...this.userAccounts[this.accountId] };
     }
   }
 };

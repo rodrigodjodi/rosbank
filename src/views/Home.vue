@@ -7,7 +7,6 @@
     </app-header>
     <div class="tabs">
       <a @click="view = 'AccountList'" :class="['tab', view === 'AccountList'?'router-link-active':'']">Resumo</a>
-      <a @click="view = 'Statement'" :class="['tab', view === 'Statement'?'router-link-active':'']">Lançamentos</a>
       <a @click="view = 'Forecast'" :class="['tab', view === 'Forecast'?'router-link-active':'']">30 dias</a>
     </div>
     <component :is="view"></component>
@@ -46,36 +45,4 @@ export default {
 };
 </script>
 <style>
-.account {
-  list-style: none;
-  border-left: 6px solid;
-  padding-left: 8px;
-  position: relative;
-}
-
-.account:hover,
-.account:focus {
-  border-left: 10px solid;
-  padding-left: 4px;
-}
-li p {
-  margin-bottom: 0.5rem;
-}
-li p:last-child {
-  font-size: 2rem;
-  color: #aaa;
-}
-.account-body {
-  width: 80%;
-  display: inline-block;
-  user-select: none;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-.action {
-  float: right;
-  width: 48px;
-  height: 100%;
-  cursor: pointer;
-}
 </style>

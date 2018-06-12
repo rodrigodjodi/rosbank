@@ -5,7 +5,7 @@
         <font-awesome-icon :icon="icon" size="2x" pull="left"/>
       </router-link>
   </app-header>
- <router-view></router-view>
+ <component :is="comp"></component> 
 </div>
   
 </template>
@@ -15,13 +15,23 @@
 import appHeader from "@/components/Header";
 import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
 import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
+const AccountForm = () => import("@/components/AccountForm");
+const TransactionForm = () => import("@/components/TransactionForm");
+
 export default {
+  name: "Forms",
   components: {
     appHeader,
-    FontAwesomeIcon
+    FontAwesomeIcon,
+    AccountForm,
+    TransactionForm
   },
-  name: "Forms",
-
+  props: {
+    comp: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
     icon() {
       return faArrowLeft;

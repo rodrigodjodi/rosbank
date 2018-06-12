@@ -6,6 +6,7 @@
       type="text"
       :value="valuetxt"
       inputmode="numeric"
+      :disabled="disabled"
       @keyup="updateValue($event.target.value)"
     >
   </div>
@@ -17,6 +18,7 @@ import numeral from "numeral";
 import numeralpt from "numeral/locales/pt-br";
 numeral.locale("pt-br");
 export default {
+  name: "inputMoney",
   props: {
     value: {
       type: Number,
@@ -27,6 +29,10 @@ export default {
     },
     inputClass: {
       type: String
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

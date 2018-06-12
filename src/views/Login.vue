@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <app-header>
-      
-    </app-header>
+    <app-header />
     <div class="row">
       <button class="button-primary" @click="doLogin">ENTRAR COM O GOOGLE</button>
     </div>

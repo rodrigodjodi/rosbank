@@ -1,23 +1,23 @@
 <template>
-<div v-if="user">
+<div v-if="userAccounts">
   <div class="tabs">
-    <input type="radio" id="debit" value="debit" v-model="transactionEditing.type">
-    <input type="radio" id="credit" value="credit" v-model="transactionEditing.type">
-    <input type="radio" id="transfer" value="transfer" v-model="transactionEditing.type">
-    <label :class="['tab', transactionEditing.type === 'debit'?'router-link-active':'']" for="debit">Débito</label>
-    <label :class="['tab', transactionEditing.type === 'credit'?'router-link-active':'']" for="credit">Crédito</label>
-    <label :class="['tab', transactionEditing.type === 'transfer'?'router-link-active':'']" for="transfer">Transferência</label>
+    <input type="radio" id="debit" value="debit" v-model="transaction.type">
+    <input type="radio" id="credit" value="credit" v-model="transaction.type">
+    <input type="radio" id="transfer" value="transfer" v-model="transaction.type">
+    <label :class="['tab', transaction.type === 'debit'?'router-link-active':'']" for="debit">Débito</label>
+    <label :class="['tab', transaction.type === 'credit'?'router-link-active':'']" for="credit">Crédito</label>
+    <label :class="['tab', transaction.type === 'transfer'?'router-link-active':'']" for="transfer">Transferência</label>
   </div>
-  <label for="from-account">Conta: <span v-if="accountProp">{{accountProp.name}}</span></label>
-  <select v-if="!accountProp" v-model="fromAccount" id="from-account">
-    <option value="">Selectione...</option>
-    <option v-for="account in userAccounts" :key="account.id" :value="account.id">{{account.name}}</option>
+  <label for="from-account">Conta: <span v-if="accountId">{{userAccounts[accountId].name}}</span></label>
+  <select v-if="!accountId" v-model="fromAccount" id="from-account">
+    <option value="">Selecione...</option>
+    <option v-for="(account, id) in userAccounts" :key="id" :value="id">{{account.name}}</option>
   </select>
 
-  <input-money input-class="u-full-width" label="Valor:" v-model="transactionEditing.value"/>
+  <input-money input-class="u-full-width" label="Valor:" v-model="transaction.amount"/>
 
   <google-place-autocomplete
-      v-model="transactionEditing.who"
+      v-model="transaction.who"
       id="map"
       classname="u-full-width"
       label="Quem / Onde..."
@@ -25,16 +25,16 @@
       @placechanged="updateLocation"
   />
   <label for="what">O quê?</label>
-  <input class="u-full-width" type="text" v-model="transactionEditing.what" id="what" placeholder="Descrição...">
+  <input class="u-full-width" type="text" v-model="transaction.what" id="what" placeholder="Descrição...">
 
   <label for="when">Quando?</label>
-  <input type="date" v-model="transactionEditing.when" id="when">
+  <input type="date" v-model="transaction.when" id="when">
 
   <label for="who">Pra quando?</label>
-  <input type="date" v-model="transactionEditing.due" id="who">
+  <input type="date" v-model="transaction.due" id="who">
 
-  <button v-if="transactionEditing.type !== 'transfer'" @click="transactionCreate" class="button-primary u-full-width">LANÇAR</button>
-  <button v-if="transactionEditing.type === 'transfer'" @click="makeTransfer" class="button-primary u-full-width">TRANSFERIR</button>
+  <button v-if="transaction.type !== 'transfer'" @click="transactionCreate" class="button-primary u-full-width">LANÇAR</button>
+  <button v-if="transaction.type === 'transfer'" @click="makeTransfer" class="button-primary u-full-width">TRANSFERIR</button>
 
 </div>
 </template>
@@ -64,47 +64,57 @@ export default {
     FontAwesomeIcon
   },
   props: {
-    id: {
-      type: Object,
-      default: function() {
-        return {
-          type: "debit",
-          value: 0,
-          who: "",
-          what: "",
-          when: new Date().toDateInputValue(),
-          due: new Date().toDateInputValue(),
-          geo: null
-        };
-      }
-    },
-    accountProp: {
-      type: Object
+    transactionId: {
+      type: String
     }
   },
   data() {
     return {
-      transactionEditing: this.id,
+      transaction: {
+        type: "debit",
+        amount: 0,
+        who: "",
+        what: "",
+        when: new Date().toDateInputValue(),
+        due: new Date().toDateInputValue(),
+        geo: null
+      },
       fromAccount: "",
       toAccount: ""
     };
   },
   computed: {
+    ...mapState(["user", "userAccounts", "transactions"]),
     icon() {
       return faArrowLeft;
     },
-    ...mapState(["user", "userAccounts"])
+    accountId() {
+      return this.$route.params.accountId;
+    },
+    accountBalance() {
+      return this.userAccounts[this.accountId].balance;
+    }
   },
   methods: {
     transactionCreate() {
+      let resultingBalance;
+      if (this.transaction.type === "debit") {
+        resultingBalance = this.accountBalance - this.transaction.amount;
+      } else if (this.transaction.type === "credit") {
+        resultingBalance = this.accountBalance + this.transaction.amount;
+      }
+      this.transaction.user = this.user.uid;
+      this.transaction.account = this.accountId;
       db
-        .collection("accounts")
-        .doc(this.fromAccount)
         .collection("transactions")
-        .add(this.transactionEditing)
+        .add(this.transaction)
         .then(() => {
           this.clearFields();
-          this.$router.go(-1);
+          return db
+            .collection("accounts")
+            .doc(this.accountId)
+            .update({ balance: resultingBalance })
+            .then(() => this.$router.go(-1));
         })
         .catch(error => {
           console.error("Error writing document: ", error);
@@ -115,15 +125,15 @@ export default {
       console.log("this is a transfer");
     },
     updateLocation(payload) {
-      this.transactionEditing.geo = new db.GeoPoint(
-        payload.latitude,
-        payload.longitude
-      )
+      this.transaction.geo = {
+        lat: payload.latitude,
+        lng: payload.longitude
+      };
     },
     clearFields() {
-      this.transactionEditing = {
+      this.transaction = {
         type: "debit",
-        value: 0,
+        amount: 0,
         who: "",
         what: "",
         when: new Date().toDateInputValue(),
@@ -135,8 +145,12 @@ export default {
     }
   },
   created() {
-    if (this.accountProp) {
-      this.fromAccount = this.accountProp.id;
+    if (this.accountId) {
+      this.fromAccount = this.accountId;
+    }
+    if (this.transactionId) {
+      this.transaction = {};
+      this.transaction = { ...this.transactions[this.transactionId] };
     }
   }
 };

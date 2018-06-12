@@ -1,19 +1,21 @@
 <template>
   <div v-if="userAccounts" class="container">
-    <app-header :title="account.name">
-    <router-link slot="nav" to="/">
+    <app-header :title="account ? account.name : 'Erro'">
+      <router-link slot="nav" to="/">
         <font-awesome-icon :icon="icons.back" size="2x" pull="left"/>
       </router-link>
-      <router-link title="Criar nova transação" slot="actions" :to="{name:'NewTransaction', params:{accountProp:account}}">
+      <router-link v-if="account" title="Criar nova transação" slot="actions" :to="{name:'NewTransaction', params:{accountProp:accountId}}">
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>
-    <div class="tabs">
+    <h5 v-if="!account">A conta "{{accountId}}" não existe</h5>
+    <div class="tabs" v-if="account">
       <a @click="view = 'Statement'" :class="['tab', view === 'Statement'?'router-link-active':'']">Extrato</a>
       <a @click="view = 'AccountForm'" :class="['tab', view === 'AccountForm'?'router-link-active':'']">Detalhes</a>
     </div>
-    <component :is="view" :account="account"></component>  
-
+    <keep-alive>
+      <component :is="view" :accountId="accountId" transition="fade" transition-mode="out-in"></component>  
+    </keep-alive>
   </div>
 </template>
 
@@ -28,7 +30,11 @@ import faArrowLeft from "@fortawesome/fontawesome-free-solid/faArrowLeft";
 export default {
   components: { appHeader, FontAwesomeIcon, AccountForm, Statement },
   name: "AccountView",
-  props: {},
+  props: {
+    accountId: {
+      type: String
+    }
+  },
   data() {
     return {
       view: "Statement"
@@ -37,9 +43,7 @@ export default {
   computed: {
     ...mapState(["userAccounts"]),
     account() {
-      return this.userAccounts.find(element => {
-        return element.id === this.$route.params.id;
-      });
+      return this.userAccounts[this.accountId];
     },
     icons() {
       return {
@@ -51,4 +55,12 @@ export default {
 };
 </script>
 <style>
+.fade-transition {
+  transition: opacity 0.82s ease;
+}
+
+.fade-enter,
+.fade-leave {
+  opacity: 0;
+}
 </style>
