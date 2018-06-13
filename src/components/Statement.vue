@@ -25,12 +25,14 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["transactions"])
+    ...mapState({
+      transactions: state => state.transaction.transactions
+    })
   },
   methods: {},
   created() {
     if (this.accountId) {
-      this.$store.dispatch("retrieveTransactions", this.accountId);
+      this.$store.dispatch("transaction/retrieveTransactions", this.accountId);
     }
   }
 };

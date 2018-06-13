@@ -6,13 +6,6 @@ import Login from "./views/Login";
 import Home from "./views/Home";
 import Account from "./views/Account";
 import Forms from "./views/Forms";
-//* components
-import TransactionForm from "./components/TransactionForm";
-import AccountList from "./components/AccountList";
-import AccountForm from "./components/AccountForm";
-import Statement from "./components/Statement";
-import Forecast from "./components/Forecast";
-
 Vue.use(Router);
 
 const router = new Router({

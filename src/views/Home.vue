@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <app-header>
-      <router-link title="Criar nova conta" slot="actions" to="new/account">
+      <router-link title="Criar nova conta" slot="actions" to="/account">
         <font-awesome-icon :icon="icons.plus" size="2x" pull="right"/>
       </router-link>
     </app-header>

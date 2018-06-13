@@ -1,9 +1,9 @@
 <template>
 <div v-if="userAccounts">
   <div class="tabs">
-    <input type="radio" id="debit" value="debit" v-model="transaction.type">
-    <input type="radio" id="credit" value="credit" v-model="transaction.type">
-    <input type="radio" id="transfer" value="transfer" v-model="transaction.type">
+    <input class="hide" type="radio" id="debit" value="debit" v-model="transaction.type">
+    <input class="hide" type="radio" id="credit" value="credit" v-model="transaction.type">
+    <input class="hide" type="radio" id="transfer" value="transfer" v-model="transaction.type">
     <label :class="['tab', transaction.type === 'debit'?'router-link-active':'']" for="debit">Débito</label>
     <label :class="['tab', transaction.type === 'credit'?'router-link-active':'']" for="credit">Crédito</label>
     <label :class="['tab', transaction.type === 'transfer'?'router-link-active':'']" for="transfer">Transferência</label>
@@ -14,24 +14,23 @@
     <option v-for="(account, id) in userAccounts" :key="id" :value="id">{{account.name}}</option>
   </select>
 
-  <input-money input-class="u-full-width" label="Valor:" v-model="transaction.amount"/>
+  <input-money input-class="u-full-width" label="Valor:*" v-model="transaction.amount"/>
 
   <google-place-autocomplete
       v-model="transaction.who"
       id="map"
       classname="u-full-width"
-      label="Quem / Onde..."
+      label="Quem / Onde?*"
       :enable-geolocation="true"
       @placechanged="updateLocation"
   />
   <label for="what">O quê?</label>
   <input class="u-full-width" type="text" v-model="transaction.what" id="what" placeholder="Descrição...">
 
-  <label for="when">Quando?</label>
+  <label for="when">Quando?<small> Use uma data futura para fazer agendamentos únicos.</small></label>
   <input type="date" v-model="transaction.when" id="when">
-
-  <label for="who">Pra quando?</label>
-  <input type="date" v-model="transaction.due" id="who">
+  <input type="checkbox" name="postpone" id="postpone-check" v-model="postpone">
+  <label for="postpone-check">Programar</label>
 
   <button v-if="transaction.type !== 'transfer'" @click="transactionCreate" class="button-primary u-full-width">LANÇAR</button>
   <button v-if="transaction.type === 'transfer'" @click="makeTransfer" class="button-primary u-full-width">TRANSFERIR</button>
@@ -80,7 +79,8 @@ export default {
         geo: null
       },
       fromAccount: "",
-      toAccount: ""
+      toAccount: "",
+      postpone: false
     };
   },
   computed: {
@@ -156,8 +156,11 @@ export default {
 };
 </script>
 
-<style scoped>
-input[type="radio"] {
+<style>
+input[type="radio"].hide {
   display: none;
+}
+small {
+  font-weight: 200;
 }
 </style>

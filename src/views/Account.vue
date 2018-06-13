@@ -41,7 +41,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userAccounts"]),
+    ...mapState({ userAccounts: state => state.account.userAccounts }),
     account() {
       return this.userAccounts[this.accountId];
     },

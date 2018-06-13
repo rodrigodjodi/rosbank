@@ -374,6 +374,7 @@ input[type="text"],
 input[type="tel"],
 input[type="url"],
 input[type="password"],
+input[type="date"],
 textarea,
 select {
   height: 38px;
@@ -593,4 +594,10 @@ there.
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {
+}
+
+/* Personal classes
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.hide {
+  display: none;
 }

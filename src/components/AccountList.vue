@@ -33,7 +33,7 @@ export default {
         transaction: faSignInAlt
       };
     },
-    ...mapState(["userAccounts"])
+    ...mapState({ userAccounts: state => state.account.userAccounts })
   }
 };
 </script>

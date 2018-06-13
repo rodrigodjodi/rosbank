@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { db } from "../firebase";
 import { mapState } from "vuex";
 import { toID } from "@/assets/utils";
 //* Components
@@ -79,7 +78,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user", "accountTypes", "userAccounts"]),
+    ...mapState({
+      user: state => state.user,
+      accountTypes: state => state.account.accountTypes,
+      userAccounts: state => state.account.userAccounts
+    }),
     idFromName() {
       return this.accountId ? this.accountId : toID(this.account.name);
     },
@@ -90,38 +93,38 @@ export default {
   },
   methods: {
     accountCreate() {
+      //TODO: validation goes here
       this.account.holder = this.user.uid;
       this.account.createdOn = new Date();
-      db
-        .collection("accounts")
-        .add(this.account)
+      this.$store
+        .dispatch("account/create", this.account) // src/store/modules/account.js
         .then(() => {
           this.clearFields();
           this.$router.push("/");
         })
         .catch(error => {
           console.error("Error writing document: ", error);
+          //TODO: nice error treatment, please
         });
     },
     accountUpdate() {
       console.log(this.account);
-      //TODO: deve atualizar a conta e todos seus lançamentos
+      //TODO
     },
     accountDelete() {
       let sure = window.confirm(
         "ATENÇÃO: Essa ação apagará a conta. As transações continuarão existindo"
       );
       if (sure) {
-        db
-          .collection("accounts")
-          .doc(this.accountId)
-          .delete()
+        this.$store
+          .dispatch("account/delete", this.accountId) // src/store/modules/account.js
           .then(() => {
             console.log("conta apagada");
             this.$router.push("/");
           })
           .catch(error => {
             console.error(error);
+            //TODO: nice error treatment, please
           });
       }
     },
