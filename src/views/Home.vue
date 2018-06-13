@@ -39,7 +39,10 @@ export default {
         plus: faPlus
       };
     },
-    ...mapState(["user", "userAccounts"])
+    ...mapState({
+      userAccounts: state => state.account.userAccounts,
+      user: state => state.user.user
+    })
   },
   methods: {}
 };

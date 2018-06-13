@@ -63,7 +63,6 @@ router.beforeResolve((to, from, next) => {
   }
   const requiresAuth = to.matched.some(route => route.meta.auth);
   const currentUser = auth.currentUser;
-  console.log(requiresAuth, currentUser);
   if (requiresAuth && !currentUser) {
     next("/login");
   } else if (requiresAuth && currentUser) {

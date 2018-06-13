@@ -18,11 +18,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState({
+      user: state => state.user.user
+    })
   },
   methods: {
     doLogin() {
-      this.$store.dispatch("handleSignIn");
+      this.$store.dispatch("user/handleSignIn");
     }
   },
   mounted() {

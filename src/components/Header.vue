@@ -26,14 +26,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(["user"]),
+    ...mapState({
+      user: state => state.user.user
+    }),
     computedTitle() {
       return this.title ? this.title : this.$route.meta.title;
     }
   },
   methods: {
     doLogout() {
-      this.$store.dispatch("handleSignOut");
+      this.$store.dispatch("user/handleSignOut");
     }
   }
 };

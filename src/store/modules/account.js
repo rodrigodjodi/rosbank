@@ -20,7 +20,7 @@ const account = {
   actions: {
     retrieveAccounts({ commit, rootState }) {
       db.collection("accounts")
-        .where("holder", "==", rootState.user.uid)
+        .where("holder", "==", rootState.user.user.uid)
         .onSnapshot(querySnapshot => {
           let accounts = {};
           querySnapshot.forEach(doc => {
