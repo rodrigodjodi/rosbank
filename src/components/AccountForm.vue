@@ -19,6 +19,22 @@
   <label>Cor:</label>
   <compact-picker :palette="defaultColors" v-model="account.color" :disabled="readOnly"/>
   <br/>
+  <label for="account_share">Compartilhada com:</label>
+ <ul>
+   <li v-for="(value, key) in account.sharedWith" :key="key">{{key}}</li>
+ </ul>
+  <a href="" @click.prevent="sharing = !sharing" v-if="!sharing">Compartilhar</a>
+  <input 
+    :class="{'is-error': errors.has('account_share')}"
+    type="email"
+    id="account_share"
+    name="account_share"
+    v-if="sharing"
+    placeholder="Email para compartilhar..."
+    @blur="sharing=false"
+    @keyup.enter="accountShare"
+  />
+
   <div v-if="!accountId" class="row">
     <div class="six columns">
       <button @click="clearFields" class="u-full-width">LIMPAR</button>
@@ -75,7 +91,8 @@ export default {
         "#84139E",
         "#3E8C3B",
         "#0E56BD"
-      ]
+      ],
+      sharing: false
     };
   },
   computed: {
@@ -128,6 +145,17 @@ export default {
             //TODO: nice error treatment, please
           });
       }
+    },
+    accountShare(ev) {
+      //TODO> validate email
+      this.account.sharedWith[ev.target.value] = true;
+      this.account.id = this.accountId;
+      this.$store
+        .dispatch("account/share", this.account)
+        .then(() => {
+          this.sharing = false;
+        })
+        .catch(error => console.error(error));
     },
     clearFields() {
       this.account = {

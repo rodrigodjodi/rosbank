@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+require("firebase/auth");
+require("firebase/firestore");
 const config = {
   //TODO: pass to environment variables
   apiKey: "AIzaSyCAsXpFCFSJW3WVVCYpR16-dGkWbLOX6AA",

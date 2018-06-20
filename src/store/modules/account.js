@@ -1,4 +1,5 @@
 import { db } from "@/firebase";
+import { firebase } from "@firebase/app";
 const account = {
   namespaced: true,
   state: {
@@ -32,17 +33,20 @@ const account = {
         });
     },
     retrieveSharedAccounts({ commit, rootState }) {
-      const test = db.FieldPath("test", "rodrigo.djodi@gmail.com");
+      const test = new firebase.firestore.FieldPath(
+        "sharedWith",
+        rootState.user.user.email
+      );
       console.log(test);
-      let query = db.collection("accounts").where(test, "==", true);
-      console.log(query);
-      /*.onSnapshot(querySnapshot => {
+      db.collection("accounts")
+        .where(test, "==", true)
+        .onSnapshot(querySnapshot => {
           let accounts = {};
           querySnapshot.forEach(doc => {
             accounts[doc.id] = doc.data();
           });
           commit("MERGE_SHARED_ACCOUNTS", accounts);
-        });*/
+        });
     },
     create({}, accountObj) {
       db.collection("accounts").add(accountObj);
@@ -51,6 +55,12 @@ const account = {
       db.collection("accounts")
         .doc(accountId)
         .delete();
+    },
+    share({}, accountObj) {
+      console.log(accountObj);
+      db.collection("accounts")
+        .doc(accountObj.id)
+        .update({ sharedWith: accountObj.sharedWith });
     }
   }
 };

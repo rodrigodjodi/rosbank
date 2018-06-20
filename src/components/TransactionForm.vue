@@ -47,6 +47,7 @@ Date.prototype.toDateInputValue = function() {
 //* libs
 import { mapState } from "vuex";
 import { db } from "@/firebase";
+import { firebase } from "@firebase/app";
 //*components
 import appHeader from "@/components/Header";
 import inputMoney from "@/components/inputMoney";
@@ -84,7 +85,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["user", "userAccounts", "transactions"]),
+    ...mapState({
+      userAccounts: state => state.account.userAccounts,
+      user: state => state.user.user.uid,
+      transactions: state => state.transaction.transactions
+    }),
     icon() {
       return faArrowLeft;
     },
@@ -125,10 +130,10 @@ export default {
       console.log("this is a transfer");
     },
     updateLocation(payload) {
-      this.transaction.geo = {
-        lat: payload.latitude,
-        lng: payload.longitude
-      };
+      this.transaction.geo = new firebase.firestore.GeoPoint(
+        payload.latitude,
+        payload.longitude
+      );
     },
     clearFields() {
       this.transaction = {
