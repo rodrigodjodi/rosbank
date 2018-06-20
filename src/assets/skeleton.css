@@ -447,6 +447,19 @@ select option {
   margin: 2px 0;
 }
 
+input[type="email"].is-error,
+input[type="number"].is-error,
+input[type="search"].is-error,
+input[type="text"].is-error,
+input[type="tel"].is-error,
+input[type="url"].is-error,
+input[type="password"].is-error,
+input[type="date"].is-error,
+textarea.is-error,
+select.is-error {
+  border: 1px solid red;
+}
+
 /* Lists
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 ul {

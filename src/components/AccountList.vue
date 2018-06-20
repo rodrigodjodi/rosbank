@@ -1,10 +1,11 @@
 
 <template>
 <div>
+  
   <ul v-if="userAccounts">
       <li tabindex="0" class="account" v-for="(account, id) in userAccounts" :key="id" :style="`border-left-color:${account.color.hex}`">
       <router-link tag="div" class="account-body" :to="`/account/${id}`">
-          <p><strong> {{account.name}}</strong></p>
+          <p><strong> {{account.name}}</strong><span class="pill" v-if="account.sharedWith[user]">compartilhada</span></p>
           <p>{{account.balance|currency}}</p>
       </router-link>
       <router-link tag="div" class="action" :to="{name:'NewTransaction', params:{accountId:id}}" :style="`color:${account.color.hex}`">
@@ -12,6 +13,8 @@
       </router-link>
       </li>
   </ul>
+  
+ 
   <router-link 
     title="Criar nova conta"
     slot="actions"
@@ -26,6 +29,7 @@ import { mapState } from "vuex";
 import FontAwesomeIcon from "@fortawesome/vue-fontawesome";
 import faSignInAlt from "@fortawesome/fontawesome-free-solid/faSignInAlt";
 export default {
+  name: "AccountList",
   components: { FontAwesomeIcon },
   computed: {
     icons() {
@@ -33,7 +37,23 @@ export default {
         transaction: faSignInAlt
       };
     },
-    ...mapState({ userAccounts: state => state.account.userAccounts })
+    ...mapState({
+      userAccounts: state => state.account.userAccounts,
+      user: state => state.user.user.uid
+    })
+  },
+  created() {
+    this.$store
+      .dispatch("account/retrieveSharedAccounts")
+      .then(() => {
+        console.log(this.$store.state.account.userAccounts);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
+  destroyed() {
+    console.log("accountList destroyed");
   }
 };
 </script>

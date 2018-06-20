@@ -9,7 +9,9 @@
       <a @click="view = 'AccountList'" :class="['tab', view === 'AccountList'?'router-link-active':'']">Resumo</a>
       <a @click="view = 'Forecast'" :class="['tab', view === 'Forecast'?'router-link-active':'']">30 dias</a>
     </div>
-    <component :is="view"></component>
+    <keep-alive>
+     <component :is="view"></component>
+    </keep-alive>
   </div>
 </template>
 

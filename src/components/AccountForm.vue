@@ -1,7 +1,7 @@
 <template>
 <div>
   <label for="account_name">Nome da conta:</label>
-  <input class="u-full-width" type="text" id="account_name" v-model="account.name" :disabled="readOnly"/>
+  <input v-validate="'length:3,16'" :class="{'u-full-width':true, 'is-error': errors.has('account_name')}" type="text" id="account_name" name="account_name" v-model="account.name" :disabled="readOnly"/>
 
   <input-money input-class="u-full-width" label="Saldo:" v-model="account.balance" :disabled="readOnly"/>
 
@@ -62,7 +62,8 @@ export default {
         type: "",
         balance: 0,
         color: "#4D4D4D",
-        holder: ""
+        holder: "",
+        sharedWith: {}
       },
       defaultColors: [
         "#4D4D4D",
@@ -79,7 +80,7 @@ export default {
   },
   computed: {
     ...mapState({
-      user: state => state.user,
+      user: state => state.user.user,
       accountTypes: state => state.account.accountTypes,
       userAccounts: state => state.account.userAccounts
     }),
@@ -109,7 +110,7 @@ export default {
     },
     accountUpdate() {
       console.log(this.account);
-      //TODO
+      //TODO: validate and call updtate function
     },
     accountDelete() {
       let sure = window.confirm(
@@ -134,7 +135,8 @@ export default {
         type: "",
         balance: 0,
         color: "#4D4D4D",
-        holder: ""
+        holder: "",
+        sharedWith: {}
       };
     }
   },

@@ -10,10 +10,9 @@ const config = {
   storageBucket: "rosbank-d6246.appspot.com",
   messagingSenderId: "354149397702"
 };
-const app = firebase.initializeApp(config);
-const auth = app.auth();
-const db = app.firestore();
-db.settings({ timestampsInSnapshots: true });
+firebase.initializeApp(config);
 const provider = new firebase.auth.GoogleAuthProvider();
-
+const auth = firebase.auth();
+const db = firebase.firestore();
+db.settings({ timestampsInSnapshots: true });
 export { auth, db, provider };

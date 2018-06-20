@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store/";
 import { auth } from "./firebase";
+import VeeValidate from "vee-validate";
 //import "./registerServiceWorker";
 //*css
 import "@/assets/normalize.css";
@@ -14,6 +15,7 @@ Vue.filter("currency", function(value) {
     currency: "BRL"
   });
 });
+Vue.use(VeeValidate);
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {

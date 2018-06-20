@@ -23,7 +23,7 @@ auth.onAuthStateChanged(user => {
   if (user) {
     store.commit("user/SET_USER", user);
     //router.replace("/");
-    store.dispatch("account/retrieveAccounts");
+    store.dispatch("account/retrieveUserAccounts");
   } else {
     store.commit("user/SET_USER", null);
     store.commit("user/SET_TOKENS", null);

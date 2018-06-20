@@ -6,6 +6,7 @@
     <router-link tag="div" class="transaction-body" :to="`/account/${accountId}/transaction/${id}`">
       <p><strong> {{transaction.who}}</strong></p>
       <p>{{transaction.amount|currency}}</p>
+      <p>{{transaction.what}}</p>
     </router-link>
     </li>
   </ul>
@@ -34,6 +35,9 @@ export default {
     if (this.accountId) {
       this.$store.dispatch("transaction/retrieveTransactions", this.accountId);
     }
+  },
+  destroyed() {
+    this.$store.commit("transaction/SET_TRANSACTIONS", {});
   }
 };
 </script>

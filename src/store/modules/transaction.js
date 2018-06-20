@@ -5,11 +5,21 @@ const transaction = {
     transactions: {}
   },
   mutations: {
+    /**
+     *
+     * @param {*} state
+     * @param {object} payload
+     */
     SET_TRANSACTIONS(state, payload) {
       state.transactions = payload;
     }
   },
   actions: {
+    /**
+     * Get transactions from account.
+     * @param {*} { commit }
+     * @param {string} accountId
+     */
     retrieveTransactions({ commit }, accountId) {
       db.collection("transactions")
         .where("account", "==", accountId)
@@ -18,7 +28,6 @@ const transaction = {
           querySnapshot.forEach(doc => {
             transactions[doc.id] = doc.data();
           });
-          console.log(transactions);
           commit("SET_TRANSACTIONS", transactions);
         });
     }
