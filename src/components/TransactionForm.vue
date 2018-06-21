@@ -28,9 +28,8 @@
   <input class="u-full-width" type="text" v-model="transaction.what" id="what" placeholder="Descrição...">
 
   <label for="when">Quando?<small> Use uma data futura para fazer agendamentos únicos.</small></label>
-  <input type="date" v-model="transaction.when" id="when">
-  <input type="checkbox" name="postpone" id="postpone-check" v-model="postpone">
-  <label for="postpone-check">Programar</label>
+  <input type="date" v-model="date" id="date" name="date">
+  
 
   <button v-if="transaction.type !== 'transfer'" @click="transactionCreate" class="button-primary u-full-width">LANÇAR</button>
   <button v-if="transaction.type === 'transfer'" @click="makeTransfer" class="button-primary u-full-width">TRANSFERIR</button>
@@ -49,7 +48,6 @@ import { mapState } from "vuex";
 import { db } from "@/firebase";
 import { firebase } from "@firebase/app";
 //*components
-import appHeader from "@/components/Header";
 import inputMoney from "@/components/inputMoney";
 import GooglePlaceAutocomplete from "@/components/GooglePlaceAutocomplete";
 //*icons
@@ -60,7 +58,6 @@ export default {
   components: {
     inputMoney,
     GooglePlaceAutocomplete,
-    appHeader,
     FontAwesomeIcon
   },
   props: {
@@ -73,15 +70,15 @@ export default {
       transaction: {
         type: "debit",
         amount: 0,
-        who: "",
         what: "",
-        when: new Date().toDateInputValue(),
-        due: new Date().toDateInputValue(),
-        geo: null
+        when: null,
+        due: null,
+        geo: null,
+        who: ""
       },
       fromAccount: "",
       toAccount: "",
-      postpone: false
+      date: new Date().toDateInputValue()
     };
   },
   computed: {
@@ -102,24 +99,34 @@ export default {
   },
   methods: {
     transactionCreate() {
-      let resultingBalance;
-      if (this.transaction.type === "debit") {
-        resultingBalance = this.accountBalance - this.transaction.amount;
-      } else if (this.transaction.type === "credit") {
-        resultingBalance = this.accountBalance + this.transaction.amount;
+      let resultingBalance = this.accountBalance;
+      let today = new Date().toDateInputValue();
+      // if date is greater than today, its a schedule
+      if (today.localeCompare(this.date) < 0) {
+        this.transaction.due = this.date;
+      } else {
+        // it´s paid, set both date fields
+        this.transaction.due = this.date;
+        this.transaction.when = this.date;
+        //aaand adjust the balance
+        if (this.transaction.type === "debit") {
+          resultingBalance = this.accountBalance - this.transaction.amount;
+        } else if (this.transaction.type === "credit") {
+          resultingBalance = this.accountBalance + this.transaction.amount;
+        }
       }
-      this.transaction.user = this.user.uid;
+      this.transaction.createdOn = new Date();
+      this.transaction.user = this.user;
       this.transaction.account = this.accountId;
-      db
-        .collection("transactions")
-        .add(this.transaction)
+      let payload = {
+        balance: resultingBalance,
+        transaction: this.transaction
+      };
+      this.$store
+        .dispatch("transaction/createTransaction", payload)
         .then(() => {
           this.clearFields();
-          return db
-            .collection("accounts")
-            .doc(this.accountId)
-            .update({ balance: resultingBalance })
-            .then(() => this.$router.go(-1));
+          this.$router.go(-1);
         })
         .catch(error => {
           console.error("Error writing document: ", error);
@@ -139,14 +146,15 @@ export default {
       this.transaction = {
         type: "debit",
         amount: 0,
-        who: "",
         what: "",
-        when: new Date().toDateInputValue(),
-        due: new Date().toDateInputValue(),
-        geo: null
+        when: null,
+        due: null,
+        geo: null,
+        who: ""
       };
       this.fromAccount = "";
       this.toAccount = "";
+      this.date = new Date().toDateInputValue();
     }
   },
   created() {

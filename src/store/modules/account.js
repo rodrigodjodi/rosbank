@@ -33,13 +33,13 @@ const account = {
         });
     },
     retrieveSharedAccounts({ commit, rootState }) {
-      const test = new firebase.firestore.FieldPath(
+      const path = new firebase.firestore.FieldPath(
         "sharedWith",
         rootState.user.user.email
       );
-      console.log(test);
+      console.log(path);
       db.collection("accounts")
-        .where(test, "==", true)
+        .where(path, "==", true)
         .onSnapshot(querySnapshot => {
           let accounts = {};
           querySnapshot.forEach(doc => {
@@ -56,11 +56,12 @@ const account = {
         .doc(accountId)
         .delete();
     },
-    share({}, accountObj) {
-      console.log(accountObj);
+    share({}, payload) {
+      console.log(payload);
+      let path = new firebase.firestore.FieldPath("sharedWith", payload.email);
       db.collection("accounts")
-        .doc(accountObj.id)
-        .update({ sharedWith: accountObj.sharedWith });
+        .doc(payload.id)
+        .update(path, payload.value);
     }
   }
 };

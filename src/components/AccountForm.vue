@@ -19,22 +19,26 @@
   <label>Cor:</label>
   <compact-picker :palette="defaultColors" v-model="account.color" :disabled="readOnly"/>
   <br/>
-  <label for="account_share">Compartilhada com:</label>
- <ul>
-   <li v-for="(value, key) in account.sharedWith" :key="key">{{key}}</li>
- </ul>
-  <a href="" @click.prevent="sharing = !sharing" v-if="!sharing">Compartilhar</a>
-  <input 
-    :class="{'is-error': errors.has('account_share')}"
-    type="email"
-    id="account_share"
-    name="account_share"
-    v-if="sharing"
-    placeholder="Email para compartilhar..."
-    @blur="sharing=false"
-    @keyup.enter="accountShare"
-  />
-
+  <div v-if="accountId && !readOnly" class="row">
+     <label for="account_share">Compartilhada com:</label>
+    <ul>
+      <li v-for="(value, key) in account.sharedWith" :key="key" v-if="value">{{key}}
+        <button @click="accountUnShare(key)">X</button>
+      </li>
+    </ul>
+      <a href="" @click.prevent="sharing = !sharing" v-if="!sharing">Compartilhar</a>
+      <input 
+        :class="{'is-error': errors.has('account_share')}"
+        type="email"
+        id="account_share"
+        name="account_share"
+        v-if="sharing"
+        placeholder="Email para compartilhar..."
+        @blur="sharing=false"
+        @keyup.enter="accountShare()"
+        v-model="sharingMail"
+      />
+  </div>
   <div v-if="!accountId" class="row">
     <div class="six columns">
       <button @click="clearFields" class="u-full-width">LIMPAR</button>
@@ -92,7 +96,8 @@ export default {
         "#3E8C3B",
         "#0E56BD"
       ],
-      sharing: false
+      sharing: false,
+      sharingMail: ""
     };
   },
   computed: {
@@ -146,12 +151,28 @@ export default {
           });
       }
     },
-    accountShare(ev) {
+    accountShare() {
       //TODO> validate email
-      this.account.sharedWith[ev.target.value] = true;
-      this.account.id = this.accountId;
+      let payload = {
+        email: this.sharingMail,
+        id: this.accountId,
+        value: true
+      };
       this.$store
-        .dispatch("account/share", this.account)
+        .dispatch("account/share", payload)
+        .then(() => {
+          this.sharing = false;
+        })
+        .catch(error => console.error(error));
+    },
+    accountUnShare(email) {
+      let payload = {
+        email: email,
+        id: this.accountId,
+        value: false
+      };
+      this.$store
+        .dispatch("account/share", payload)
         .then(() => {
           this.sharing = false;
         })
@@ -172,6 +193,14 @@ export default {
     if (this.accountId) {
       this.account = {};
       this.account = { ...this.userAccounts[this.accountId] };
+    }
+  },
+  watch: {
+    userAccounts() {
+      if (this.accountId) {
+        this.account = {};
+        this.account = { ...this.userAccounts[this.accountId] };
+      }
     }
   }
 };

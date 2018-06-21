@@ -66,4 +66,7 @@ export default {
     transform: rotate(360deg);
   }
 }
+.negative {
+  color: #f35151 !important;
+}
 </style>

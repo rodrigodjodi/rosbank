@@ -19,7 +19,7 @@
 <script>
 import { mapState } from "vuex";
 export default {
-  name: "appHeader",
+  name: "Header",
   props: {
     title: {
       type: String

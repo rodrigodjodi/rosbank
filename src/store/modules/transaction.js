@@ -23,12 +23,24 @@ const transaction = {
     retrieveTransactions({ commit }, accountId) {
       db.collection("transactions")
         .where("account", "==", accountId)
+        .orderBy("due", "desc")
+        .orderBy("when", "desc")
         .onSnapshot(querySnapshot => {
           let transactions = {};
           querySnapshot.forEach(doc => {
             transactions[doc.id] = doc.data();
           });
           commit("SET_TRANSACTIONS", transactions);
+        });
+    },
+    createTransaction({}, payload) {
+      db.collection("transactions")
+        .add(payload.transaction)
+        .then(() => {
+          return db
+            .collection("accounts")
+            .doc(payload.transaction.account)
+            .update({ balance: payload.balance });
         });
     }
   }

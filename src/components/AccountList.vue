@@ -3,10 +3,18 @@
 <div>
   
   <ul v-if="userAccounts">
-      <li tabindex="0" class="account" v-for="(account, id) in userAccounts" :key="id" :style="`border-left-color:${account.color.hex}`">
+      <li
+        tabindex="0"
+        class="account"
+        v-for="(account, id) in userAccounts" :key="id"
+        :style="`border-left-color:${account.color.hex}`"
+      >
       <router-link tag="div" class="account-body" :to="`/account/${id}`">
-          <p><strong> {{account.name}}</strong><span class="pill" v-if="account.sharedWith[user]">compartilhada</span></p>
-          <p>{{account.balance|currency}}</p>
+          <p>
+            <strong> {{account.name}}</strong>
+            <span class="pill" v-if="account.sharedWith[userEmail]">compartilhada</span>
+          </p>
+          <p :class="{negative:account.balance < 0}">{{account.balance|currency}}</p>
       </router-link>
       <router-link tag="div" class="action" :to="{name:'NewTransaction', params:{accountId:id}}" :style="`color:${account.color.hex}`">
           <font-awesome-icon :icon="icons.transaction" size="2x" pull="right" :rotation="90" />
@@ -39,7 +47,7 @@ export default {
     },
     ...mapState({
       userAccounts: state => state.account.userAccounts,
-      user: state => state.user.user.uid
+      userEmail: state => state.user.user.email
     })
   },
   created() {
@@ -76,7 +84,7 @@ li p {
 }
 li p:last-child {
   font-size: 2rem;
-  color: #aaa;
+  opacity: 0.8;
 }
 .account-body {
   width: 80%;

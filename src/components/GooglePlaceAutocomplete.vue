@@ -19,7 +19,7 @@
 <script>
 import VueScript2 from "vue-script2";
 export default {
-  name: "VueGoogleAutocomplete",
+  name: "GooglePlaceAutocomplete",
 
   props: {
     value: {
